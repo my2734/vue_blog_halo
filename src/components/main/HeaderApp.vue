@@ -9,27 +9,21 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" @click="handlerClickHome($event)">Home <span class="sr-only">(current)</span></a>
+                        </li>                       
+                        <li class="nav-item">
+                            <a class="nav-link" @click="handlerClickAbout($event)">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Shop<span><i class="fa fa-chevron-down icon_navbar" aria-hidden="true"></i></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contact Us</a>
+                            <a class="nav-link" @click="handlerClickContact($event)">Contact Us</a>
                         </li>
                         
                     </ul>
                     <ul class="nav-list-icon" style="list-style: none;">
-                        <li><a href="" class="fa fa-heart"></a></li>
-                        <li><a href="" class="fa fa-user"></a></li>
-                        <li><a href="" class="fa fa-shopping-cart"></a></li>
+                        <li v-if="isAuth"><a style="cursor:pointer" class="nav-link" @click="handlerClickPostBlog($event)">Create Blog</a></li>
+                        <li v-else><a style="cursor:pointer" @click="handlerClickLogin($event)" class="fa fa-user">Login</a></li>
+                        <li v-if="isAuth"><a style="cursor:pointer" class="nav-link" @click="handlerClickLogout($event)">Logout</a></li>
+                        
                     </ul>
                 </div>
             </nav>
@@ -39,13 +33,71 @@
 </template>
 
 <script>
+import store from "@/store"
 export default{
     name: 'HeaderApp',
+    computed: {
+        isAuth(){
+            return store.state.auth.isAuthentication
+        }
+    },
     methods:{
+        handlerClickAbout(e){
+            e.preventDefault(e)
+            this.$router.push({name: 'about'})
+        },
+        handlerClickHome(e){
+            e.preventDefault()
+            this.$router.push({name: 'home'})
+        },
+        handlerClickContact(e){
+            e.preventDefault()
+            this.$router.push({name:'contact'})
+        },  
+        handlerClickLogin(e){
+            e.preventDefault()
+            this.$router.push({name: 'login'})
+        },
         handlerClickLogo(e){
             e.preventDefault()
             this.$router.push({name: "home"})
+        },
+        handlerClickLogout(e){
+            e.preventDefault()
+            this.delete_cookie('token')
+            store.commit('UPDATE_AUTH',false)
+            this.$router.push({name: 'login'})
+        },
+        getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        },
+        delete_cookie(name) {
+            document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        },
+        handlerClickPostBlog(e){
+            e.preventDefault()
+            this.$router.push({name:'postblog'})
         }
+    },
+    created(){
+        const token = this.getCookie('token')
+        let isAuth = false
+        if(token != ""){
+            isAuth = true
+        }
+        store.commit('UPDATE_AUTH', isAuth)
     }
 }
 </script>

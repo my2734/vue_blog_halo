@@ -6,9 +6,11 @@ import adminLayout from '../layouts/adminLayout.vue'
 import HomePage from '../views/main/HomePage.vue'
 import BlogDetail from '../views/main/BlogDetail.vue'
 import ContactPage from '../views/main/ContactPage.vue'
+import AboutPage from '../views/main/AboutPage.vue'
 
-// import ListBlog from '../views/admin/ListBlog.vue'
+import ListBlog from '../views/admin/ListBlog.vue'
 import PostBlog from '../views/admin/PostBlog.vue'
+// import UpdateBlog from '../views/admin/UpdateBlog.vue'
 
 
 import BlogApp from '../views/main/BlogApp.vue'
@@ -35,7 +37,13 @@ const routes = [
     {
       path: '/contact',
       component: ContactPage,
-      
+      name: 'contact'
+    },
+    {
+      path: '/about',
+      component: AboutPage,
+      name: 'about',
+
     },
     { 
       path: '/admin/blog', 
@@ -46,25 +54,34 @@ const routes = [
     },
     {
       path: '/login',
-      component: LoginPage
+      component: LoginPage,
+      name: "login"
     },
     {
       path: '/register',
-      component: RegisterPage
+      component: RegisterPage,
+      name: 'register'
     },
-    // {
-    //   path: '/admin/list-blog',
-    //   component: ListBlog,
-    //   name: 'listblog',
-    //   meta: {
-    //     layout: adminLayout
-    //   }
-    // },
-    
+    {
+      path: '/admin/list-blog',
+      component: ListBlog,
+      name: 'listpost',
+      meta: {
+        layout: adminLayout
+      }
+    },
     {
       path: "/admin/post-blog",
       component: PostBlog,
       name: 'postblog',
+      meta: {
+        layout: adminLayout
+      }
+    },
+    {
+      path: "/admin/update-blog/:id",
+      component: PostBlog,
+      name: 'updateblog',
       meta: {
         layout: adminLayout
       }

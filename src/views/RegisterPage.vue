@@ -2,21 +2,121 @@
     <div class="log-form">
       <h2>Register to your account</h2>
       <form>
-        <input class="form-control" type="text" title="username" placeholder="username" />
+        <input v-model="user.username" @change="handlerUsername()" class="form-control" type="text" title="username" placeholder="Username" />
+        <span v-if="statusError.username" class="text-danger">*Vui lòng nhập Username*</span>
         <div class="mt-4"></div>
-        <input class="form-control" type="password" title="username" placeholder="password" />
+        <input v-model="user.email" class="form-control" type="text" title="username" placeholder="Email" />
+        <span v-if="statusError.email" class="text-danger">*Vui lòng nhập Email*</span>
+        <div class="mt-4"></div>
+        <input v-model="user.password" class="form-control" type="password" title="username" placeholder="Password" />
+        <span v-if="statusError.password" class="text-danger">*Vui lòng nhập password*</span>
         <div class="text-center">
-          <button type="submit" class="btn2 text-center btn_review btn-primary">Login</button>
+          <button @click="handlerSubmitLogin($event)" type="submit" class="btn2 text-center btn_review btn-primary">Register</button>
         </div>
-      
-        <a class="nav-link" href="#">Login now?</a>
+        <div class="row">
+          <a @click="handlerClickHome($event)" class="nav-link" href="#">Home</a>
+          <a @click="handlerClickLogin($event)" class="nav-link" href="#">Login now?</a>
+        </div>
+        
       </form>
     </div><!--end log form -->
   </template>
   
   <script>
+  import axios from 'axios'
   export default{
-    name: 'RegisterPage'
+    name: 'RegisterPage',
+    data(){
+        return {           
+            user: {
+                username: "",
+                email: "",
+                password: "",
+            },
+            status: true,
+            statusError: {
+                username: false,
+                email: false,
+                password: false,
+            }
+          
+        }
+    },
+    methods:{
+      handlerClickHome(e){
+        e.preventDefault()
+        this.$router.push({name: 'home'})
+      },
+      handlerClickLogin(e){
+        e.preventDefault()
+        this.$router.push({name: 'login'})
+      },
+      handlerSubmitLogin(e){
+        e.preventDefault()
+        this.validate()
+        if(this.status){
+          const data = {
+            username: this.user.username,
+            email: this.user.email,
+            password: this.user.password
+          }
+          axios.post('http://localhost:3000/api/auth/register',data)
+            .then(response=>{
+              if(response.status == 200){
+                this.user.username = ""
+                this.user.email = ""
+                this.user.password = ""
+                this.$router.push({name: 'login'})
+              }
+            })
+            .catch(error=>{
+              console.log(error)
+            })
+        }
+      },
+      validate(){
+        if(this.user.username == ""){
+          this.status = false
+          this.statusError.username = true
+        }else{
+          this.statusError.username = false
+
+        }
+
+        if(this.user.email == ""){
+          this.status = false
+          this.statusError.email = true
+        }else{
+          this.statusError.email = false
+        }
+
+        if(this.user.password == ""){
+          this.status = false
+          this.statusError.password = true
+        }else{
+          this.statusError.password = false
+        }
+
+        if(this.user.username != "" && this.user.email!="" && this.user.password!=""){
+          this.status = true
+        }
+      },
+      handlerUsername(){
+        const name = this.user.username
+        axios.get('http://localhost:3000/api/user?name='+name)
+          .then(response=>{
+            if(response.status == 200){
+              if(response.data.length > 0){
+                this.status = false
+                this.statusError.username = true
+              }
+            }
+          })
+          .catch(error=>{
+            console.log(error)
+          })
+      }
+    }
   }
   </script>
   

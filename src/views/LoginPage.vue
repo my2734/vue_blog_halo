@@ -2,21 +2,96 @@
   <div class="log-form">
     <h2>Login to your account</h2>
     <form>
-      <input class="form-control" type="text" title="username" placeholder="username" />
+      <input v-model="user.username" class="form-control" type="text" title="username" placeholder="Username" />
+      <span v-if="!statusError.username" class="text-danger">*Vui lòng nhập Username*</span>
       <div class="mt-4"></div>
-      <input class="form-control" type="password" title="username" placeholder="password" />
+      <input v-model="user.password" class="form-control" type="password" title="username" placeholder="Password" />
+      <span v-if="!statusError.password" class="text-danger">*Vui lòng nhập password*</span>
       <div class="text-center">
-        <button type="submit" class="btn2 text-center btn_review btn-primary">Login</button>
+        <button type="submit" @click="handlerSubmitLogin($event)" class="btn2 text-center btn_review btn-primary">Login</button>
       </div>
-    
-      <a class="nav-link" href="#">Register now?</a>
+      <div class="row">
+        <a @click="handlerClickHome($event)" class="nav-link" href="#">Home</a>
+        <a @click="handlerClickRegister($event)" class="nav-link" href="#">Register now?</a>
+      </div>
     </form>
   </div><!--end log form -->
 </template>
 
 <script>
+import axios from 'axios'
 export default{
-  name: 'LoginPage'
+  name: 'LoginPage',
+  data(){
+    return {
+      user: {
+        username: "",
+        password: ""
+      },
+      status: false,
+      statusError: {
+        username: true,
+        password: true
+      }
+    }
+  },
+  methods: {
+    handlerClickHome(e){
+      e.preventDefault()
+      this.$router.push({name: 'home'})
+    },
+    validate(){
+      if(this.user.username != ""){
+        this.status = false
+        this.statusError.username = true
+      }else{
+        this.statusError.username = false
+      }
+
+      if(this.user.password != ""){
+        this.status = false
+        this.statusError.password = true
+      }else{
+        this.statusError.password = false
+      }
+
+      if(this.statusError.username!="" && this.statusError.password){
+        this.status = true
+      }
+    },
+    
+    handlerSubmitLogin(e){
+      e.preventDefault()
+      this.validate()
+      if(this.status){
+        const data = {
+          username: this.user.username,
+          password: this.user.password
+        }
+        axios.post('http://localhost:3000/api/auth/login',data)
+          .then(response=>{
+              if(response.status == 200){
+                const token = response.data
+                this.setCookie("token",token, '3d')
+                this.$router.push({name: 'home'})
+              }
+          })
+          .catch(error=>{
+            console.log(error)
+          })
+      }
+    },
+    handlerClickRegister(e){
+      e.preventDefault()
+      this.$router.push({name: 'register'})
+    },
+    setCookie(cname, cvalue, exdays) {
+      const d = new Date();
+      d.setTime(d.getTime() + (exdays*24*60*60*1000));
+      let expires = "expires="+ d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+  }
 }
 </script>
 

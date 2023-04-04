@@ -7,6 +7,9 @@ const store = createStore({
       list_blog: [],
       blog_detail: {
 
+      },
+      auth: {
+        isAuthentication: false,
       }
     }
   },
@@ -19,6 +22,18 @@ const store = createStore({
     },
     GET_BLOG_DETAIL(state,data){
       state.blog_detail = data
+    },
+    DELETE_BLOG(state,id){
+      state.list_blog = state.list_blog.filter(blog => blog._id != id)
+    },
+    UPDATE_BLOG(state,data){
+      const {_id, ...info} = data
+      state.list_blog = state.list_blog.map(blog=>{
+        return  blog._id == _id ? info : blog
+      })
+    },
+    UPDATE_AUTH(state, isAuth){
+      state.auth.isAuthentication = isAuth
     }
   },
   actions: {
@@ -47,7 +62,25 @@ const store = createStore({
       }catch(error){
         console.log("Loi action getBlogDetail")
       }
-    }
+    },
+    async deleteBlog({commit},id){
+      try{  
+        await axios.delete('http://localhost:3000/api/blog/'+id)
+        commit('DELETE_BLOG',id)
+      }catch(error){
+        console.log("Loi action deleteBlog")
+      }
+    },
+    async updateBlog({commit},data){
+      try{  
+        const {id, ...info} = data
+        const response = await axios.put('http://localhost:3000/api/blog/'+id, info)
+        commit('UPDATE_BLOG',response.data)
+      }catch(error){
+        console.log("Loi action updateBlog")
+      }
+    },
+
   }
 })
 

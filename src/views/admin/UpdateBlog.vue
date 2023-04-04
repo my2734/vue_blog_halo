@@ -34,8 +34,7 @@
                     <textarea class="form-control" v-model="blog.footer" id="exampleFormControlTextarea1" rows="3"></textarea>
                 </div>
                
-                <button v-if="!status_update" @click="handlerSubmitBlog($event)" class="btn2 text-center btn_review btn-primary mb-5">Submit</button>
-                <button v-else @click="handlerUpdateBlog($event)" class="btn2 text-center btn_review btn-primary mb-5">Update</button>
+                <button @click="handlerSubmitBlog($event)" class="btn2 text-center btn_review btn-primary mb-5">Submit</button>
             </form>
     </div> 
 </template>
@@ -43,7 +42,7 @@
 import axios from 'axios'
 import {mapActions} from 'vuex'
 export default{
-    name: "PostBlog",
+    name: "UpdateBlog",
     data(){
         return {
             status: false,
@@ -90,26 +89,6 @@ export default{
                 this.status = false
             }
         },
-        validation_update(){
-            if(this.blog.title == ""){
-                this.statusError.title = true
-                this.status = true
-            }else{
-                this.statusError.title = false
-            }
-
-            if(this.blog.category == ""){
-                this.statusError.category = true
-                this.status = true
-            }else{
-                this.statusError.category = false
-            }
-
-
-            if(this.blog.title != "" && this.blog.category != ""){
-                this.status = false
-            }
-        },
         handlerSubmitBlog(e){
             e.preventDefault()
             this.validation()
@@ -153,71 +132,16 @@ export default{
                 })
             }
         },
-        handlerUpdateBlog(e){
-            e.preventDefault()
-            this.validation_update()
-            //upload image 
-            if(!this.status){
-                const data = {
-                    id: this.$route.params.id,
-                    title : this.blog.title,
-                    category : this.blog.category,
-                    header: this.blog.header,
-                    body: this.blog.body,
-                    footer: this.blog.footer
-                }
-                //upload image
-                if(this.blog.image.name){
-                    axios.post(
-                        "http://localhost:3000/api/upload",
-                        { file: this.blog.image },
-                        {
-                            headers: {
-                                "Content-Type": "multipart/form-data",
-                            },
-                        }
-                    )
-                    .then(()=>{
-                        data.image = this.blog.image.name
-                        this.updateBlog(data)
-                        //redirect list blog
-                        this.$router.push({name: "listpost"})
-                    })
-                    .catch((error)=>{
-                        console.log(error)
-                        console.log("Loi upload")
-                    })
-                }else{ //khong upload image
-                    this.updateBlog(data)
-                    //redirect list blog
-                    this.$router.push({name: "listpost"})
-                }
-            }
-        },
         uploadFile() {
             this.blog.image = this.$refs.file.files[0];
             this.statusError.title = false
         },
-        ...mapActions(['addNewBlog','updateBlog'])
+        ...mapActions(['addNewBlog'])
     },
-   created(){
-        if(this.$route.params.id){
-            this.status_update = true
-            const id = this.$route.params.id
-            axios.get('http://localhost:3000/api/blog/'+id)
-                .then(response=>{
-                    this.blog.title = response.data.title
-                    this.blog.category = response.data.category
-                    this.blog.header = response.data.header
-                    this.blog.body = response.data.body
-                    this.blog.footer = response.data.footer
-                
-                })  
-                .catch(error=>{
-                    console.log(error)
-                })
-        }
-   }
+    created(){
+        // const id = this.$route.params.id
+        
+    }
 }
 </script>
 

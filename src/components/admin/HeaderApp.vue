@@ -9,7 +9,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <router-link :to="{name: 'home'}" href="#">Home <span class="sr-only">(current)</span></router-link>
+                            <a style="cursor:pointer" class="nav-link" @click="handlerClickHome($event)">Home <span class="sr-only">(current)</span></a>
                         </li>
                     </ul>
                 </div>
@@ -21,6 +21,12 @@
 <script>
 export default{
     name: 'HeaderApp',
+    methods: {
+        handlerClickHome(e){
+            e.preventDefault()
+            this.$router.push({name: 'home'})
+        }
+    }
 }
 </script>
 

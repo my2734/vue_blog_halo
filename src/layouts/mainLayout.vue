@@ -1,6 +1,7 @@
 <template>
     <div class="">
         <HeaderApp />
+        <div style="margin-top: 64px"></div>
         <SlideApp />
         <div class="container-fluid">
             <div class="container-cover">

@@ -24,7 +24,8 @@ export default{
     name: "SideBar",
     methods: {
         handlerClickListBlog(){
-            this.$router.push({name: 'listblog'})
+            console.log('click list post')
+            this.$router.push({name: 'listpost'})
         },
         handlerClickPostBlog(){
             this.$router.push({name: 'postblog'})

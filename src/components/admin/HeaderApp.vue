@@ -19,13 +19,18 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default{
     name: 'HeaderApp',
     methods: {
         handlerClickHome(e){
             e.preventDefault()
             this.$router.push({name: 'home'})
-        }
+        },
+        ...mapActions(['getListCategory'])
+    },
+    created(){
+        this.getListCategory()
     }
 }
 </script>

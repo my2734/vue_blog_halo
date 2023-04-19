@@ -9,7 +9,9 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Category *</label>
-                    <input type="text" v-model="blog.category" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter your name">
+                    <select v-model="blog.category" class="form-control" id="exampleFormControlSelect1">
+                        <option :value="category.name" v-for="category in list_category" :key="category._id">{{ category.name }}</option>
+                      </select>
                     <span v-if="statusError.category" class="text-danger">*Vui lòng nhập danh mục*</span>
                 </div>
                 <div class="form-group">
@@ -42,6 +44,7 @@
 <script>
 import axios from 'axios'
 import {mapActions} from 'vuex'
+import store from '@/store'
 export default{
     name: "PostBlog",
     data(){
@@ -61,6 +64,11 @@ export default{
                 image: false,
             },
             status_update: false,
+        }
+    },
+    computed: {
+        list_category(){
+            return store.state.list_category
         }
     },
     methods: {

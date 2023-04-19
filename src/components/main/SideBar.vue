@@ -3,10 +3,8 @@
         <h5>Categories</h5>
         <hr class="separate_category">
         <div class="list_category">
-            <p><a class="text_link">Men </a></p>
-            <p><a class="text_link">Football </a></p>
-            <p><a class="text_link">Men's</a></p>
-            <p><a class="text_link">Portable Audio</a></p>
+            <p v-for="category in list_category" :key="category._id"><a class="text_link">{{ category.name }} </a></p>
+           
         </div>
 
         
@@ -14,8 +12,14 @@
 </template>
 
 <script>
+import store from '@/store'
 export default{
-    name: "SideBar"
+    name: "SideBar",
+    computed: {
+        list_category(){
+            return store.state.list_category
+        }
+    }
 }
 </script>
 

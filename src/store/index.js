@@ -5,6 +5,7 @@ const store = createStore({
   state () {
     return {
       list_blog: [],
+      list_category:[],
       blog_detail: {
 
       },
@@ -34,6 +35,9 @@ const store = createStore({
     },
     UPDATE_AUTH(state, isAuth){
       state.auth.isAuthentication = isAuth
+    },
+    GET_LIST_CATEGORY(state,data){
+      state.list_category = data
     }
   },
   actions: {
@@ -80,6 +84,14 @@ const store = createStore({
         console.log("Loi action updateBlog")
       }
     },
+    async getListCategory({commit}){
+      try{
+        const response = await axios.get('http://localhost:3000/api/category')
+        commit('GET_LIST_CATEGORY',response.data)
+      }catch(error){
+        console.log('Loi action getListCategory')
+      }
+    }
 
   }
 })

@@ -34,6 +34,7 @@
 
 <script>
 import store from "@/store"
+import { mapActions } from "vuex"
 export default{
     name: 'HeaderApp',
     computed: {
@@ -89,7 +90,8 @@ export default{
         handlerClickPostBlog(e){
             e.preventDefault()
             this.$router.push({name:'postblog'})
-        }
+        },
+        ...mapActions(['getListCategory'])
     },
     created(){
         const token = this.getCookie('token')
@@ -98,6 +100,7 @@ export default{
             isAuth = true
         }
         store.commit('UPDATE_AUTH', isAuth)
+        this.getListCategory()
     }
 }
 </script>

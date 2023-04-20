@@ -91,8 +91,15 @@ const store = createStore({
       }catch(error){
         console.log('Loi action getListCategory')
       }
-    }
-
+    },
+    async getListBlogByCategory({commit},category){
+      try{
+        const response = await axios.get('http://localhost:3000/api/blog?category='+category)
+        commit('GETLISTBLOG',response.data)
+      }catch(error){
+          console.log("Loi action getListBlog")
+      }
+    },
   }
 })
 

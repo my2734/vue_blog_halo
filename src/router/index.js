@@ -14,10 +14,11 @@ import PostBlog from '../views/admin/PostBlog.vue'
 // import UpdateBlog from '../views/admin/UpdateBlog.vue'
 
 
-import BlogApp from '../views/main/BlogApp.vue'
+
 
 import LoginPage from '../views/LoginPage.vue'
 import RegisterPage from '../views/RegisterPage.vue'
+import store from '@/store'
 const routes = [
     { 
       path: '/', 
@@ -46,13 +47,7 @@ const routes = [
       name: 'about',
 
     },
-    { 
-      path: '/admin/blog', 
-      component: BlogApp, 
-      meta:{
-        layout: adminLayout
-      }
-    },
+    
     {
       path: '/login',
       component: LoginPage,
@@ -97,10 +92,17 @@ const routes = [
     }
   ]
 
+
+
   const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
   })
-  
+
+  router.beforeEach((to, from, next) => {
+    const array_router_admin = ['listpost', 'listcategory', 'postblog','updateblog'];
+    if (array_router_admin.includes(to.name) && store.state.auth.isAuthentication==false ) next({ name: 'login' })
+    else next()
+  })
 
 export default router

@@ -53,6 +53,7 @@ export default{
         },
         handlerClickContact(e){
             e.preventDefault()
+            this.getListBlog()
             this.$router.push({name:'contact'})
         },  
         handlerClickLogin(e){
@@ -61,7 +62,9 @@ export default{
         },
         handlerClickLogo(e){
             e.preventDefault()
+            this.getListBlog()
             this.$router.push({name: "home"})
+
         },
         handlerClickLogout(e){
             e.preventDefault()
@@ -91,7 +94,7 @@ export default{
             e.preventDefault()
             this.$router.push({name:'postblog'})
         },
-        ...mapActions(['getListCategory'])
+        ...mapActions(['getListCategory','getListBlog'])
     },
     created(){
         const token = this.getCookie('token')
